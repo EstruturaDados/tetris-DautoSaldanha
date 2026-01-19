@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define MAX 5
 
@@ -18,19 +19,19 @@ typedef struct {
 
 // Função para iniciar a fila
 void iniciarFila(Fila *f) {
-    f -> inicio = 0;
-    f -> fim = 0;
-    f -> total = 0;
+    f->inicio = 0;
+    f->fim = 0;
+    f->total = 0;
 }
 
-// Dado da fila vazia
+// Verifica se a fila está vazia
 int filaVazia(Fila *f) {
-    return f -> total == 0;
+    return f->total == 0;
 }
 
-// Daodo da fila cheia
+// Verifica se a fila está cheia
 int filaCheia(Fila *f) {
-    return f -> total == MAX;
+    return f->total == MAX;
 }
 
 // Função de adicionar
@@ -40,13 +41,14 @@ void enfileirar(Fila *f, Peca p) {
         return;
     }
 
-    f -> itens[f -> fim] = p;
-    f -> fim = (f -> fim + 1) % MAX;
-    f -> total++;
+    f->itens[f->fim] = p;
+    f->fim = (f->fim + 1) % MAX;
+    f->total++;
+
     printf("Peça %c adicionada à fila.\n", p.tipo);
 }
 
-// Removendo da Fila
+// Removendo da fila
 Peca desenfileirar(Fila *f) {
     Peca p = {' '};
 
@@ -55,12 +57,11 @@ Peca desenfileirar(Fila *f) {
         return p;
     }
 
-    p = f -> itens[f -> inicio];
-    f -> inicio = (f -> inicio + 1) % MAX;
-    f -> total--;
+    p = f->itens[f->inicio];
+    f->inicio = (f->inicio + 1) % MAX;
+    f->total--;
     return p;
 }
-
 
 // Função para mostrar a fila
 void mostraFila(Fila *f) {
@@ -68,11 +69,12 @@ void mostraFila(Fila *f) {
         printf("Fila vazia\n");
         return;
     }
-    printf("Fila de peças: \n");
 
-    int pos = f -> inicio;
-    for (int i = 0; i < f -> total; i++) {
-        printf("%dª peça -> TIPO: %c\n", i+1, f -> itens[pos].tipo);
+    printf("Fila de peças:\n");
+    int pos = f->inicio;
+
+    for (int i = 0; i < f->total; i++) {
+        printf("%dª peça -> TIPO: %c\n", i + 1, f->itens[pos].tipo);
         pos = (pos + 1) % MAX;
     }
 }
@@ -81,12 +83,15 @@ int main() {
     Fila fila;
     iniciarFila(&fila);
 
+    srand(time(NULL)); // inicializa o gerador aleatório
+
     int opcao;
     Peca p;
+    char tipos[] = {'I', 'O', 'T', 'L', 'S', 'Z', 'J'};
 
     do {
         printf("\n=== TETRIS STACK ===\n");
-        printf("1 - Adicionar nova peça\n");
+        printf("1 - Inserir nova peça\n");
         printf("2 - Jogar peça\n");
         printf("3 - Mostrar fila de peças\n");
         printf("0 - Sair\n");
@@ -95,8 +100,7 @@ int main() {
 
         switch (opcao) {
             case 1:
-                printf("Digite o tipo da peça (I, O, T, L, etc): ");
-                scanf(" %c", &p.tipo);
+                p.tipo = tipos[rand() % 7]; // geração automática
                 enfileirar(&fila, p);
                 break;
 
@@ -123,4 +127,3 @@ int main() {
 
     return 0;
 }
-
